@@ -1,5 +1,27 @@
 (() => {
+  /* ── Product tabs — scoped per tablist (supports nested sub-tabs) ── */
+  document.querySelectorAll('[role="tablist"]').forEach(tablist => {
+    const tabs = tablist.querySelectorAll('[role="tab"]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Deactivate all sibling tabs in this tablist
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        // Hide all panels controlled by this tablist
+        tabs.forEach(t => {
+          const panel = document.getElementById(t.getAttribute('aria-controls'));
+          if (panel) panel.classList.add('product-panel--hidden');
+        });
+        // Activate clicked tab and show its panel
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const target = document.getElementById(tab.getAttribute('aria-controls'));
+        if (target) target.classList.remove('product-panel--hidden');
+      });
+    });
+  });
+
   /* ── Shade card image modal ── */
+
   const modal = document.getElementById('image-modal');
   const modalImage = document.getElementById('modal-image');
   const modalTitle = document.getElementById('modal-title');
